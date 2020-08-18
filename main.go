@@ -10,7 +10,7 @@ import (
 
 func main() {
 	pb := NewFilePhonebook("store.json")
-	commands := MakeCommandsFor(pb)
+	commands := MakeCommands(pb)
 
 	reader := bufio.NewReader(os.Stdin)
 	for {

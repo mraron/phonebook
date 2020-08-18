@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func MakeCommandsFor(pb Phonebook) map[string]func([]string)int {
+func MakeCommands(pb Phonebook) map[string]func([]string)int {
 	var commands = map[string]func([]string)int {
 		"add": func(args []string) int {
 			if len(args) < 3 {
@@ -83,7 +83,14 @@ func MakeCommandsFor(pb Phonebook) map[string]func([]string)int {
 			return 0
 		},
 		"help": func(args []string) int {
-			fmt.Println("@TODO")
+			fmt.Println("add <name> <phone>: adds <name> with <phone> to the store (for example: add Kiss Béla +6423432)")
+			fmt.Println("del <name>: deletes <name> from to the store (for example: del Kiss Béla)")
+			fmt.Println("print <name>: prints <name>'s phone number (for example: print Kiss Béla)")
+			fmt.Println("list: lists all numbers")
+			fmt.Println("save: save the list")
+			fmt.Println("load: load the list")
+			fmt.Println("help: displays this message")
+			fmt.Println("quit: quits from the program")
 			return 0
 		},
 	}
