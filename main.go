@@ -1,21 +1,33 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"os"
 	"strings"
+
+	"github.com/c-bata/go-prompt"
 )
 
+func completer(in prompt.Document) []prompt.Suggest {
+	s := []prompt.Suggest{
+		{Text: "add", Description: "Adds a phone number"},
+		{Text: "del", Description: "Deletes a phone number"},
+		{Text: "print", Description: "Prints the phone number"},
+		{Text: "list", Description: "list all phone numbers"},
+		{Text: "save", Description: "saves all phone numbers"},
+		{Text: "help", Description: "help!"},
+		{Text: "quit", Description: "quit."},
+	}
+	return prompt.FilterHasPrefix(s, in.GetWordBeforeCursor(), true)
+}
 
 func main() {
 	pb := NewFilePhonebook("store.json")
 	commands := MakeCommands(pb)
+	history := []string{}
 
-	reader := bufio.NewReader(os.Stdin)
 	for {
-		fmt.Print("PB> ")
-		line, _ := reader.ReadString('\n')
+		line := prompt.Input("PB> ", completer, prompt.OptionHistory(history))
+		history = append(history, line)
 
 		args := strings.Fields(line)
 		command := args[0]
