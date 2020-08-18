@@ -54,6 +54,8 @@ func (fp *FilePhonebook) Delete(name string) error {
 		return fmt.Errorf("%s not found, can't delete", name)
 	}
 
+	fp.people = append(fp.people[:index], fp.people[index+1:]...)
+
 	return nil
 }
 
