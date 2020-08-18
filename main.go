@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -23,6 +24,28 @@ func findIndexOf(name string) int {
 	}
 
 	return index
+}
+
+func savePeople(file string) error {
+	f, err := os.Create(file) //overwrites the actual contents of file
+	if err != nil {
+		return err
+	}
+	defer f.Close() //runs after return value so ok
+
+	enc := json.NewEncoder(f)
+	return enc.Encode(people)
+}
+
+func loadPeople(file string) error {
+	f, err := os.OpenFile(file, os.O_RDWR|os.O_APPEND, 0660) //os.Open: read-only os.Create: truncates file
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	dec := json.NewDecoder(f)
+	return dec.Decode(&people) //dangerous, destroys the content of people
 }
 
 var commands = map[string]func([]string)int {
@@ -70,7 +93,23 @@ var commands = map[string]func([]string)int {
 			fmt.Println(curr.Name, curr.Phone)
 		}
 
-		fmt.Printf("listed %d name-phone pairs\n", len(people))
+		fmt.Printf("\nok, listed %d name-phone pairs\n", len(people))
+		return 0
+	},
+	"save": func(args []string) int {
+		err := savePeople("store.json")
+		if err != nil {
+			fmt.Println("error while saving", err)
+			return 1
+		}
+		return 0
+	},
+	"load": func(args []string) int {
+		err := loadPeople("store.json")
+		if err != nil {
+			fmt.Println("error while loading", err)
+			return 1
+		}
 		return 0
 	},
 	"quit": func(args []string) int {
