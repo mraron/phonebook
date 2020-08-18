@@ -49,24 +49,25 @@ func loadPeople(file string) error {
 }
 
 var commands = map[string]func([]string)int {
-	"add": func(args []string) int { //@TODO: support multiple names
-		if len(args) != 3 {
+	"add": func(args []string) int {
+		if len(args) < 3 {
 			fmt.Println("usage: add <name> <phone>")
 			return 1
 		}
 
-		people = append(people, Person{args[1], args[2]})
+		people = append(people, Person{strings.Join(args[1:len(args)-1], " "), args[len(args)-1]})
 		return 0
 	},
 	"del": func(args []string) int {
-		if len(args) != 2 {
+		if len(args) < 2 {
 			fmt.Println("usage: del <name>")
 			return 1
 		}
 
-		index := findIndexOf(args[1])
+		name := strings.Join(args[1:len(args)], " ")
+		index := findIndexOf(name)
 		if index == -1 {
-			fmt.Printf("%s not found, can't delete\n", args[1]);
+			fmt.Printf("%s not found, can't delete\n", name);
 			return 1
 		}
 
@@ -74,14 +75,15 @@ var commands = map[string]func([]string)int {
 		return 0
 	},
 	"print": func(args []string) int {
-		if len(args) != 2 {
+		if len(args) < 2 {
 			fmt.Println("usage: print <name>")
 			return 1
 		}
 
-		index := findIndexOf(args[1])
+		name := strings.Join(args[1:len(args)], " ")
+		index := findIndexOf(name)
 		if index == -1 {
-			fmt.Printf("%s not found, can't print\n", args[1])
+			fmt.Printf("%s not found, can't print\n", name)
 			return 1
 		}
 
